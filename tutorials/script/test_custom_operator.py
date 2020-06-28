@@ -55,14 +55,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
     endpoint = args.endpoint
     logging.info("Begin to test: endpoint-%s" % endpoint)
-    logging.info("Endpoint information:%s" % identity(endpoint))
-    logging.info("Endpoint health:%s" % health(endpoint))
+    logging.info("Endpoint information: %s" % identity(endpoint))
+    logging.info("Endpoint health: %s" % health(endpoint))
 
     vector, data = execute(endpoint, urls=[test_url])
     logging.info("Result :\n  vector size: %d;  data size: %d" % (len(vector), len(data)))
 
     if len(vector) > 0:
-        logging.info("  vector dim%s" % len(vector[0]))
+        logging.info("  vector dim: %s" % len(vector[0]))
 
     logging.info("All tests over.")
     exit()

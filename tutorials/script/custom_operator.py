@@ -19,18 +19,13 @@ os.environ['KERAS_HOME'] = os.path.abspath(os.path.join('.', 'data'))
 
 class CustomOperator:
     def __init__(self):
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
-        config.gpu_options.per_process_gpu_memory_fraction = 0.5
-        self.session = tf.Session(config=config)
+        self.session = tf.Session()
         set_session(self.session)
-
         self.graph = tf.get_default_graph()
         self.model = ResNet50(
                     weights='imagenet',
                     include_top=False,
                     pooling='avg')
-        self.device_str = os.environ.get("device_id", "/cpu:0")
 
 
     def execute(self, img_path):
@@ -39,12 +34,11 @@ class CustomOperator:
         x = np.expand_dims(x, axis=0)
         x = preprocess_input(x)
         with self.graph.as_default():
-            with tf.device(self.device_str):
-                with self.session.as_default():
-                    features = self.model.predict(x)
-                    norm_feature = features[0] / LA.norm(features[0])
-                    norm_feature = [i.item() for i in norm_feature]
-                    return norm_feature
+            with self.session.as_default():
+                features = self.model.predict(x)
+                norm_feature = features[0] / LA.norm(features[0])
+                norm_feature = [i.item() for i in norm_feature]
+                return norm_feature
 
 
     def run(self, images, urls):

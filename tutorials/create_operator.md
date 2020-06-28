@@ -61,7 +61,6 @@ $ cd resnet50-encoder
 file=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 url=https://github.com/fchollet/deep-learning-models/releases/download/v0.1/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 
 if [[ ! -f "${file}" ]]; then
-   mkdir -p models
    echo "[INFO] Model tar package does not exist, begin to download..."
    wget ${url} -O ${file}
    echo "[INFO] Model tar package download successfully!"
@@ -131,14 +130,15 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 $ make cpu
 ```
 
- 我们可以在 **Makefile** 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
+我们可以在 **Makefile** 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
 
 ### 2.4 启动容器并验证
 
 - 启动容器
 
 ```bash
-$ docker run -p 52001:52001 -e OP_ENDPOINT=127.0.0.1:52001 -d psoperator/resnet50_encoder:latest
+$ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
+$ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/resnet50_encoder:latest
 ```
 
   该命令的参数介绍：
@@ -156,7 +156,8 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=127.0.0.1:52001 -d psoperator/resnet5
 ```bash
 # Download and run the test_operator.py
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/test_custom_operator.py
-$ python3 test_custom_operator.py -e 127.0.0.1:52001
+
+$ python3 test_custom_operator.py -e ${LOCAL_ADDRESS}:52001
 # You are expected to see the following output
 INFO:root:Begin to test: endpoint-127.0.0.1:50013
 INFO:root:Endpoint information: {'name': 'resnet50', 'endpoint': '192.168.1.85:50013', 'type': 'encoder', 'input': 'image', 'output': 'vector', 'dimension': '2048', 'metric_type': 'L2'}
@@ -178,28 +179,24 @@ INFO:root:All tests over.
 - 查看容器的运行状态，包括 [Phantoscope 快速开始](https://github.com/zilliztech/phantoscope/tree/0.1.0/docs/site/zh-CN/quickstart) 时启动的 5 个容器，以及上一步启动的自定义Operator 的容器。
 
 ```bash
-$ docker ps                                                                                            
-CONTAINER ID        IMAGE                                      COMMAND                  CREATED             STATUS              PORTS                                              NAMES
-05e666f48f5f        psoperator/xception-encoder:latest         "python3 server.py"      9 seconds ago       Up 9 seconds        0.0.0.0:50011->50011/tcp, 50012/tcp                happy_ellis
-c4dd13b3fc5d        psoperator/ssd-detector:latest             "python3 server.py"      15 seconds ago      Up 14 seconds       0.0.0.0:50010->50010/tcp, 51002/tcp                keen_leavitt
-  09bd2658493b        psoperator/vgg16:latest                    "python3 server.py"      23 seconds ago      Up 22 seconds       0.0.0.0:50001->50001/tcp                           omnisearch_vgg_1
-  0ce974dc8891        phantoscope/api-server:0.1.0               "/usr/bin/gunicorn3 …"   23 seconds ago      Up 22 seconds       0.0.0.0:5000->5000/tcp                             omnisearch_api_1
-  3bf49c362d79        daocloud.io/library/mysql:5.6              "docker-entrypoint.s…"   26 seconds ago      Up 24 seconds       0.0.0.0:3306->3306/tcp                             omnisearch_mysql_1
-  3f6f6750bc21        milvusdb/milvus:0.7.0-cpu-d031120-de409b   "/var/lib/milvus/doc…"   26 seconds ago      Up 23 seconds       0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp   omnisearch_milvus_1
-  f5e387c6016b        minio/minio:latest                         "/usr/bin/docker-ent…"   26 seconds ago      Up 24 seconds       0.0.0.0:9000->9000/tcp                             omnisearch_minio_1
-  bedc9420d6d5        phantoscope/preview:latest                 "/bin/bash -c '/usr/…"   40 minutes ago      Up 40 minutes       0.0.0.0:8000->80/tcp                               brave_ellis
+$ docker ps
+CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
+160fe088d86e        psoperator/resnet50_encoder:latest          "python3 server.py"      6 minutes ago       Up 6 minutes        80/tcp, 0.0.0.0:52001->52001/tcp                     bold_kilby
+2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      5 days ago          Up 5 days           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
+5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   5 days ago          Up 5 days           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
+0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   5 days ago          Up 5 days           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
+a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   5 days ago          Up 5 days           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
+2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   5 days ago          Up 5 days           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
 ```
 
 将 `resnet50-encoder` Operator 注册到 Phantoscope 中：
 
 ```bash
-# register ssd-object-detector to phantoscope with exposed 50010 port and a self-defined name 'ssd_detector'
-$ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
 $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 --header 'Content-Type: application/json' \
 --data '{
     "endpoint": "'${LOCAL_ADDRESS}':52001",     
-    "name": "resnet50-encoder"
+    "name": "resnet50_encoder"
 }'
 ```
 
@@ -210,7 +207,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
   正确的运行结果会返回对应 Operator 的信息：
 
 ```bash
-{"_name": "resnet50-encoder", "_backend": "ssd", "_type": "processor", "_input": "image", "_output": "images", "_endpoint": "192.168.1.192:52001", "_metric_type": "-1", "_dimension": -1}%  
+{"_name": "resnet50_encoder", "_backend": "resnet50-encoder", "_type": "encoder", "_input": "image", "_output": "vector", "_endpoint": "127.0.0.1:52001", "_metric_type": "L2", "_dimension": 2048}
 ```
 
 
