@@ -24,7 +24,7 @@
 1. 下载 Phantoscope：
 
 ```bash
-$ git clone https://github.com/zilliztech/phantoscope.git && cd phantoscope
+$ git clone -b 0.1.0 https://github.com/zilliztech/phantoscope.git && cd phantoscope
 ```
 
 2. 设置环境变量：
