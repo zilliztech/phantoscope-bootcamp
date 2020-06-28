@@ -58,7 +58,8 @@ $ cd resnet50-encoder
 - 编辑修改 **data/prepare_model.sh** 脚本，通过 `wget` 命令下载模型：
 
 ```bash
-file=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 url=https://github.com/fchollet/deep-learning-models/releases/download/v0.1/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+file=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+url=https://github.com/fchollet/deep-learning-models/releases/download/v0.1/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 
 if [[ ! -f "${file}" ]]; then
    echo "[INFO] Model tar package does not exist, begin to download..."
@@ -143,11 +144,11 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/
 
   该命令的参数介绍：
 
-| 参数                               | 描述                                                         |
-| ---------------------------------- | ------------------------------------------------------------ |
-| -p 52001:52001                     | -p 表示端口映射，将本机的 52001 端口映射到 Docker 中的52001端口 |
-| -e OP_ENDPOINT=127.0.0.1:52001     | -e 定义 Docker 的环境变量，容器的 OP_ENDPOINT 环境变量的端口需要与 -p 映射的 Docker 端口一致 |
-| psoperator/resnet50_encoder:latest | Docker 镜像名称，请修改为上一步自定义的镜像名                |
+| 参数                                  | 描述                                                         |
+| ------------------------------------- | ------------------------------------------------------------ |
+| -p 52001:52001                        | -p 表示端口映射，将本机的 52001 端口映射到 Docker 中的52001端口，要求两个端口一致 |
+| -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 | -e 定义 Docker 的环境变量，容器的 OP_ENDPOINT 环境变量的端口需要与 -p 映射的端口一致 |
+| psoperator/resnet50_encoder:latest    | Docker 镜像名称，请修改为上一步自定义的镜像名                |
 
   容器启动后可以运行 `docker logs <resnet50_encoder container id>` 查看状态。
 
@@ -159,8 +160,8 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 
 $ python3 test_custom_operator.py -e ${LOCAL_ADDRESS}:52001
 # You are expected to see the following output
-INFO:root:Begin to test: endpoint-127.0.0.1:50013
-INFO:root:Endpoint information: {'name': 'resnet50', 'endpoint': '192.168.1.85:50013', 'type': 'encoder', 'input': 'image', 'output': 'vector', 'dimension': '2048', 'metric_type': 'L2'}
+INFO:root:Begin to test: endpoint-192.168.1.85:52001
+INFO:root:Endpoint information: {'name': 'resnet50_encoder', 'endpoint': '192.168.1.85:52001', 'type': 'encoder', 'input': 'image', 'output': 'vector', 'dimension': '2048', 'metric_type': 'L2'}
 INFO:root:Endpoint health: healthy
 INFO:root:Result :
   vector size: 1;  data size: 0
@@ -182,11 +183,11 @@ INFO:root:All tests over.
 $ docker ps
 CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
 160fe088d86e        psoperator/resnet50_encoder:latest          "python3 server.py"      6 minutes ago       Up 6 minutes        80/tcp, 0.0.0.0:52001->52001/tcp                     bold_kilby
-2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      5 days ago          Up 5 days           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
-5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   5 days ago          Up 5 days           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
-0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   5 days ago          Up 5 days           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
-a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   5 days ago          Up 5 days           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
-2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   5 days ago          Up 5 days           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
+2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      5 days ago          Up 10 minutes           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
+5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   5 days ago          Up 10 minutes           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
+0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   5 days ago          Up 10 minutes           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
+a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   5 days ago          Up 10 minutes           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
+2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   5 days ago          Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
 ```
 
 将 `resnet50-encoder` Operator 注册到 Phantoscope 中：
@@ -207,7 +208,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
   正确的运行结果会返回对应 Operator 的信息：
 
 ```bash
-{"_name": "resnet50_encoder", "_backend": "resnet50-encoder", "_type": "encoder", "_input": "image", "_output": "vector", "_endpoint": "127.0.0.1:52001", "_metric_type": "L2", "_dimension": 2048}
+{"_name": "resnet50_encoder", "_backend": "resnet50_encoder", "_type": "encoder", "_input": "image", "_output": "vector", "_endpoint": "127.0.0.1:52001", "_metric_type": "L2", "_dimension": 2048}
 ```
 
 
@@ -216,7 +217,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 综上，我们已经将自定义的 Operator 注册到 Phantoscope 中了，接下来可以创建一个  Application 实现以图搜图，参考 [创建 Application](./object.md)。
 
-> 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50-encoder`。
+> 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50_encoder`。
 
 
 
@@ -225,6 +226,11 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 本文实现了基于 ResNet 模型以图搜图，与 Vgg16 模型创建的 Application 搜索同一张图片的效果比对如下：
 
 - Vgg 模型检索效果
+
+![](F:\github\phantoscope-bootcamp\tutorials\pic\vgg16.png)
+
 - 自定义 Operator 检索效果（ResNet）
+
+![](F:\github\phantoscope-bootcamp\tutorials\pic\resnet50.png)
 
 我们知道 Vgg 模型的准确率确实低于 ResNet，本文检索的效果也是后者更优。
