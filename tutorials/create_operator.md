@@ -12,7 +12,7 @@ Phantoscope 是一个基于 Milvus 与深度学习的云原生图像搜索引擎
 
 - 掌握基础的 Docker 命令
 
-- 熟悉 [Phantoscop 基本概念]([https://github.com/zilliztech/phantoscope/blob/0.1.0/README_CN.md#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5](https://github.com/zilliztech/phantoscope/blob/0.1.0/README_CN.md#基本概念))
+- 熟悉 [Phantoscop 基本概念](https://github.com/zilliztech/phantoscope/blob/0.1.0/README_CN.md#基本概念)
 
 - 成功运行 [Phantscop 快速开始](https://github.com/zilliztech/phantoscope/tree/0.1.0/docs/site/zh-CN/quickstart) ，查看所有容器状态：
 
@@ -47,14 +47,15 @@ $ docker-compose ps
 基于 **example-custom-operaotor** 内容创建 **resnet50-encoder** 目录：
 
 ```bash
-$ cp -rf example-custom-operator vgg19-encoder
+$ cp -rf example-custom-operator resnet50-encoder
+$ cd resnet50-encoder
 ```
 
 ### 2.2 自定义模型
 
 #### 2.2.1 下载模型
 
-- 创建 **data/prepare_model.sh** 脚本，通过 `wget` 命令下载模型：
+- 编辑修改 **data/prepare_model.sh** 脚本，通过 `wget` 命令下载模型：
 
 ```bash
 file=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 url=https://github.com/fchollet/deep-learning-models/releases/download/v0.1/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
@@ -89,12 +90,12 @@ fi
 | dimension(self) | 返回自定义 Operator 的模型输出向量的维度，如2048 |
 | metric_type(self) | 返回自定义 Operator 的模型 metric，如 L2(欧氏距离) |
 
-- 本文基于 ResNet50 自定义 `CustomOperator`，参考 [resnet50_custom_operator.py](./script/custom_operator,py) 代码:
+- 本文基于 ResNet50 自定义 `CustomOperator`，参考 [resnet50_custom_operator.py](./script/custom_operator.py) 代码:
 
 ```bash
 # download custom_operator.py to resnet50-encoder floder
 $ mv custom_operator.py custom_operator.py.bak
-$ wget custom_operator.py
+$ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/custom_operator.py
 ```
 
 - 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt, requirements-gpu.txt** 中添加：
@@ -115,7 +116,7 @@ pillow
 ```bash
 # download server.py to resnet50-encoder floder
 $ mv server.py server.py.bak
-$ wget server.py
+$ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/server.py
 ```
 
 > 如果你的模型实现的功能是 processor 类型，那么应该删除 encoder 的相关代码。 
@@ -126,7 +127,7 @@ $ wget server.py
 
 ```bash
 $ mv Makefile Makefile.bak
-$ wget Makefile
+$ wget wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/Makefile
 $ make cpu
 ```
 
@@ -154,8 +155,8 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=127.0.0.1:52001 -d psoperator/resnet5
 
 ```bash
 # Download and run the test_operator.py
-$ wget test_operator.py
-$ python3 test_grpc.sh.py -e 127.0.0.1:52001
+$ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/test_custom_operator.py
+$ python3 test_custom_operator.py -e 127.0.0.1:52001
 # You are expected to see the following output
 INFO:root:Begin to test: endpoint-127.0.0.1:50013
 INFO:root:Endpoint information: {'name': 'resnet50', 'endpoint': '192.168.1.85:50013', 'type': 'encoder', 'input': 'image', 'output': 'vector', 'dimension': '2048', 'metric_type': 'L2'}
