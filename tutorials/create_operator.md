@@ -127,7 +127,7 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 
 ```bash
 $ mv Makefile Makefile.bak
-$ wget wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/Makefile
+$ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/Makefile
 $ make cpu
 ```
 
