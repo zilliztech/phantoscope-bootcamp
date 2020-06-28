@@ -73,7 +73,7 @@ class CustomOperator:
 
     @property
     def name(self):
-        return "resnet50"
+        return "resnet50-encoder"
 
     @property
     def type(self):
