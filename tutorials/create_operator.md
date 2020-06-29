@@ -182,11 +182,11 @@ INFO:root:All tests over.
 $ docker ps
 CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
 160fe088d86e        psoperator/resnet50_encoder:latest          "python3 server.py"      6 minutes ago       Up 6 minutes        80/tcp, 0.0.0.0:52001->52001/tcp                     bold_kilby
-2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      10 minutes ago          Up 10 minutes           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
-5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   10 minutes ago          Up 10 minutes           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
-0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   10 minutes ago          Up 10 minutes           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
-a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   10 minutes ago          Up 10 minutes           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
-2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   10 minutes ago          Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
+2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      10 minutes ago       Up 10 minutes           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
+5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   10 minutes ago       Up 10 minutes           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
+0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   10 minutes ago       Up 10 minutes           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
+a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   10 minutes ago       Up 10 minutes           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
+2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   10 minutes ago       Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
 ```
 
 将 `resnet50-encoder` Operator 注册到 Phantoscope 中：
@@ -214,7 +214,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 ## 4. 创建 Application
 
-综上，我们已经将自定义的 Operator 注册到 Phantoscope 中了，接下来可以创建一个  Application 实现以图搜图，参考 [创建 Application](./object.md)。
+综上，我们已经将自定义的 Operator 注册到 Phantoscope 中了，接下来可以创建一个  Application 实现以图搜图，参考 [创建 Application](./create_application.md)。
 
 > 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，这一步可跳过，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50_encoder`。
 
@@ -226,10 +226,10 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 - Vgg 模型检索效果
 
-![](F:\github\phantoscope-bootcamp\tutorials\pic\vgg16.png)
+![](./pic/vgg16.png)
 
 - 自定义 Operator 检索效果（ResNet）
 
-![](F:\github\phantoscope-bootcamp\tutorials\pic\resnet50.png)
+![](./pic/resnet50.png)
 
 我们知道 Vgg 模型的准确率低于 ResNet，本文检索的效果也是后者更优。
