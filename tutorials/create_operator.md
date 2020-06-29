@@ -90,7 +90,7 @@ fi
 | dimension(self) | 返回自定义 Operator 的模型输出向量的维度，如2048 |
 | metric_type(self) | 返回自定义 Operator 的模型 metric，如 L2(欧氏距离) |
 
-- 本文基于 ResNet50 自定义 `CustomOperator`，参考 [resnet50_custom_operator.py](./script/custom_operator.py) 代码:
+- 本文基于 ResNet50 模型自定义 `CustomOperator`，参考 [resnet50_custom_operator.py](./script/custom_operator.py) 代码:
 
 ```bash
 # download custom_operator.py to resnet50-encoder floder
@@ -146,8 +146,8 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/
 
 | 参数                                  | 描述                                                         |
 | ------------------------------------- | ------------------------------------------------------------ |
-| -p 52001:52001                        | -p 表示端口映射，将本机的 52001 端口映射到 Docker 中的52001端口，要求两个端口一致 |
-| -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 | -e 定义 Docker 的环境变量，容器的 OP_ENDPOINT 环境变量的端口需要与 -p 映射的端口一致 |
+| -p 52001:52001                        | -p 表示端口映射，将本机的 52001 端口映射到 Docker 中的52001端口 |
+| -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 | -e 定义 Docker 的环境变量，容器的 OP_ENDPOINT 环境变量的端口需要与 -p 映射到本机的端口一致 |
 | psoperator/resnet50_encoder:latest    | Docker 镜像名称，请修改为上一步自定义的镜像名                |
 
   容器启动后可以运行 `docker logs <resnet50_encoder container id>` 查看状态。
@@ -157,7 +157,6 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/
 ```bash
 # Download and run the test_operator.py
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/test_custom_operator.py
-
 $ python3 test_custom_operator.py -e ${LOCAL_ADDRESS}:52001
 # You are expected to see the following output
 INFO:root:Begin to test: endpoint-192.168.1.85:52001
@@ -183,11 +182,11 @@ INFO:root:All tests over.
 $ docker ps
 CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS              PORTS                                                NAMES
 160fe088d86e        psoperator/resnet50_encoder:latest          "python3 server.py"      6 minutes ago       Up 6 minutes        80/tcp, 0.0.0.0:52001->52001/tcp                     bold_kilby
-2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      5 days ago          Up 10 minutes           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
-5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   5 days ago          Up 10 minutes           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
-0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   5 days ago          Up 10 minutes           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
-a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   5 days ago          Up 10 minutes           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
-2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   5 days ago          Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
+2fd3b14d3577        psoperator/vgg16:latest                     "python3 server.py"      10 minutes ago          Up 10 minutes           0.0.0.0:50001->50001/tcp                             phantoscope_vgg_1
+5f48b00f1b6c        phantoscope/api-server:v0.1.0               "/usr/bin/gunicorn3 …"   10 minutes ago          Up 10 minutes           0.0.0.0:5000->5000/tcp                               phantoscope_api_1
+0a96852998b2        mysql:5.6                                   "docker-entrypoint.s…"   10 minutes ago          Up 10 minutes           0.0.0.0:3306->3306/tcp                               phantoscope_mysql_1
+a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus/doc…"   10 minutes ago          Up 10 minutes           0.0.0.0:8080->8080/tcp, 0.0.0.0:19530->19530/tcp     phantoscope_milvus_1
+2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   10 minutes ago          Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
 ```
 
 将 `resnet50-encoder` Operator 注册到 Phantoscope 中：
@@ -203,7 +202,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
   > 端口 52001 是启动自定义 Operactor 容器时映射的端口。
   >
-  >  `name` 参数 resnet50-encoder 是在 custom_operator.py 中定义的 Operator 名称。
+  >  `name` 参数 resnet50_encoder 是在 custom_operator.py 中定义的 Operator 名称。
 
   正确的运行结果会返回对应 Operator 的信息：
 
@@ -217,7 +216,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 综上，我们已经将自定义的 Operator 注册到 Phantoscope 中了，接下来可以创建一个  Application 实现以图搜图，参考 [创建 Application](./object.md)。
 
-> 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50_encoder`。
+> 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，这一步可跳过，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50_encoder`。
 
 
 
@@ -233,4 +232,4 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 ![](F:\github\phantoscope-bootcamp\tutorials\pic\resnet50.png)
 
-我们知道 Vgg 模型的准确率确实低于 ResNet，本文检索的效果也是后者更优。
+我们知道 Vgg 模型的准确率低于 ResNet，本文检索的效果也是后者更优。
