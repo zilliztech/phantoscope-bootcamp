@@ -152,7 +152,7 @@ $ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/pre
 
 完成上述步骤后，打开浏览器，输入127.0.0.1:8000。界面显示如下，点击左上角的搜索按钮即可体验刚搭建好的以图搜图项目。
 
-![1592898199](C:\Users\37790\Desktop\Phantoscope\pic\1592898199.png)
+![1592898199](pic/1592898199.png)
 
 除了通过我们提供的前端 Preview 来搜索图片。您也可以通过 curl 来进行搜搜。
 
