@@ -61,10 +61,10 @@ Phantoscope_vgg_1      python3 server.py                Up      0.0.0.0:50001->5
 
 | 容器名               | 功能                                                         |
 | -------------------- | ------------------------------------------------------------ |
-| Phantoscope_api_1    | 该容器提供 phantscope 的所有 API，[详情参考 RESTful API 文档](https://app.swaggerhub.com/apis-docs/Phantoscope/Phantoscope/0.1.0)。 |
+| Phantoscope_api_1    | 该容器提供 phantscope 的所有 API，[详情参考 RESTful API 文档](https://app.swaggerhub.com/apis-docs/phantoscope/Phantoscope/0.1.0)。 |
 | Phantoscope_milvus_1 | 该容器启动 Milvus 服务，用来存储图片转化成的向量，以及做向量相似度搜索。 |
 | Phantoscope_minio_1  | 该容器提供MinIO对象存储服务，用于存储导入的图片。            |
-| Phantoscope_mysql_1  | 该容器启动 Mysql 服务，用结构化数据。                        |
+| Phantoscope_mysql_1  | 该容器启动 Mysql 服务，用结构化数据的存储。                        |
 | Phantoscope_vgg_1    | 该容器提供 vgg 服务，容器负责将图片向量化。                  |
 
 > 在上述容器启动时，指定了 Phantoscope_milvus_1 和 Phantoscope_mysql_1 以及 Phantoscope_minio_1 三个容器中的数据在物理机上的存储位置。可以通过修改文件 docker-compose.yml 中的参数 `volumes` 来指定数据在物理机的存储位置。本项目中的数据默认存储在 **/mnt/om** 路径下。
