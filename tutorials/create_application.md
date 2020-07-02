@@ -229,5 +229,75 @@ $ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/pre
 
 
 
-### 
+## 部分 API 说明
 
+上述讲了如何在 Phantoscope 中，注册 Operator、创建 Pipeline 和 Application。那接下来将如何查看和删除 Phantoscope 中的 Operator、Pipeline 和 Application。 更多关于 API 的详细描述请参考 [Phantoscope API](https://app.swaggerhub.com/apis-docs/phantoscope/Phantoscope/0.1.0#/)。
+
+### 查看 Operator、Pipeline、Application
+
+**查看 Phantoscope 中注册的的所有 Operator**
+
+```shell
+$ curl -X GET "http://127.0.0.1:5000/v1/operator/" -H "accept: application/json"
+```
+
+**查看 Phantoscope 中创建的的所有 Pipeline**
+
+```shell
+$ curl -X GET "http://127.0.0.1:5000/v1/pipeline/" -H "accept: application/json"
+```
+
+**查看 Phantoscope 中创建的的所有 Application**
+
+```shell
+$ curl -X GET "http://127.0.0.1:5000/v1/application/" -H "accept: application/json"
+```
+
+### 删除 Operator、Pipeline、Application
+
+**删除一个在 Phantoscope 中注册的 Operator。**
+
+```shell
+$ curl -X DELETE "http://127.0.0.1:5000/v1/operator/vgg19" -H "accept: application/json"
+```
+
+> 上述语句删除了一个名为 vgg19 的 Operator.
+
+**删除一个 Phantoscope 中的 Pipeline。**
+
+```shell
+$ curl -X DELETE "http://127.0.0.1:5000/v1/pipeline/vgg19_pipeline" -H "accept: application/json"
+```
+
+> 上述语句删除了一个名为 vgg19_pipeline 的Pipeline。
+
+**删除一个 Phantoscope 中的 Application。**
+
+在删除一个 Application 之前，需要先删除该 Application 中的 entity（也就是这个 Application 中导入的图片数据。）
+
+1. 查看该 Application 下的 entity
+
+```shell
+# 查看该 Application 下的 entity
+$ curl -X GET "http://127.0.0.1:5000/v1/application/example_app/entity?num=100" -H "accept: application/json"
+```
+
+> 该接口可以查看一个 Application 中已有的 entity 的 id。一个 entity 对应一张图片。
+
+2. 删除 entity
+
+```shell
+# 删除 entity
+$ curl -X DELETE "http://127.0.0.1:5000/v1/application/example_app/entity/1592888165100064000" -H "accept: application/json"
+```
+
+> 删除entity，需要传入两个参数。一个是 Application 的名称，也就是上面命令中的 `example_app`, 一个是要删除的 entity 对应的 id，也就是上面个命令中的 `1592888165100064000`。如果要删除一个 Application 中的某张图片，可以通过该接口实现。
+
+3. 删除 Application
+
+```shell
+# 删除 Application
+$ curl -X DELETE "http://127.0.0.1:5000/v1/application/example_app" -H "accept: application/json"
+```
+
+> 该命令删除了一个名为 `example_app` 的 Application。在目前版本中，需要先删除 Application 中的所有 entity 才能删除该 Application 。
