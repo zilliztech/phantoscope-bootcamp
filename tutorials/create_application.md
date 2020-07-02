@@ -61,7 +61,7 @@ Phantoscope_vgg_1      python3 server.py                Up      0.0.0.0:50001->5
 
 Operator 是 Phantoscope 中的工作单元，负责将输入的图片向量化，Phantoscope 提供了多个使用不同模型实现的 Operator,  这些 Operator 详情可参考文档 [Phantoscope 内置 Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/operator.md)。
 
-> 您也可以使用自己的模型来实现一个Operator，如何将自己的模型在 Phantoscope 中创建一个 Operator 可参考文档 [创建 Operator, 实现自定义模型](create_operotar)。
+> 您也可以使用自己的模型来实现一个Operator，如何将自己的模型在 Phantoscope 中创建一个 Operator 可参考文档 [创建 Operator, 实现自定义模型](create_operator.md)。
 
 在 Phantoscope 中，Operator 可分为 Processor 和 Encoder 两类。Processor 通常负责对图片数据做进一步的处理。比如 Processor 接收了一张图片，然后将图片中的人脸数据提取出来，再将人脸的数据发送出去。通常来说 Processor 接收的数据与发送的数据都是同一种类型的。Encoder 是 Operator 的最后一环，Encoder 会将非结构化的数据转变成向量或者是标签。
 
