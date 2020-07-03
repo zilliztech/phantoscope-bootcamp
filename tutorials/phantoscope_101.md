@@ -141,7 +141,7 @@ $ curl --location --request POST $LOCAL_ADDRESS':5000/v1/application/example_app
 本步骤将启动 Phantoscope 的前端进行图片搜索。关于前端界面 Preview 的更多详细说明请参考 [Preview 说明](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/preview.md)。
 
 ```shell
-$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/preview:latest
+$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 phantoscope/preview:latest
 ```
 
 > | 参数 | 说明                                                         |
