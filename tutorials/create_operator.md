@@ -111,7 +111,7 @@ pillow
 
 #### 2.2.3 调整 gRPC 服务
 
-**server.py** 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
+[server.py](./script/server.py) 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
 
 ```bash
 # download server.py to resnet50-encoder floder
@@ -131,7 +131,7 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 $ make cpu
 ```
 
-我们可以在 **Makefile** 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
+我们可以在 [Makefile](./script/Makefile) 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
 
 ### 2.4 启动容器并验证
 
@@ -155,7 +155,7 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/
 - 验证容器
 
 ```bash
-# Download and run the test_operator.py
+# Download and run the test_operator.py in the current directory
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/test_custom_operator.py
 $ python3 test_custom_operator.py -e ${LOCAL_ADDRESS}:52001
 # You are expected to see the following output
@@ -168,7 +168,7 @@ INFO:root:  vector dim: 2048
 INFO:root:All tests over.
 ```
 
-> 运行测试脚本 -e 的参数与启动容器时的 `OP_ENDPOINT` 内容对应。
+> 运行 [test_custom_operator.py](./script/test_custom_operator.py) 测试脚本 -e 的参数与启动容器时的 `OP_ENDPOINT` 内容对应。
 >
 > 应该在启动容器后过约 3 分钟再运行验证代码，因为初始化 Operator 需要一些时间。
 
