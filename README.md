@@ -1,4 +1,6 @@
 # About Phantoscope Bootcamp
+[English](./README.md) | [中文版](./README_CN.md)
+
 Phantoscope is a cloud-native image search engine based on Milvus and deep learning, designed to help users meet the challenges of image-based search:
 
 - High-performance search for billions of images.
@@ -9,7 +11,7 @@ Phantoscope is a cloud-native image search engine based on Milvus and deep learn
 
 - Native support for Docker and Kubernetes.
 
-本在线训练营包括以下内容：
+This bootcamp includes the following content:
 
 - [Getting start with Phantoscope](./tutorials)
 - [Application scenarios](./scenarios)
