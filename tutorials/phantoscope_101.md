@@ -88,14 +88,14 @@ $ ./scripts/prepare.sh
 >
 > Application 对应的是实际业务场景。创建完成 Application 后即可实现图片的导入和查询等操作了。关于更多 Application 的详解请参考 [什么是Application.](https://github.com/zilliztech/Phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/application.md)
 >
-> 在 Phantoscope 中，提供了多种将图片向量化的开源的深度学习模型实现的 Operator，你可以将我们提供的其他 Operator 注册到 Phantoscope中。也可以用自己的模型创建一个 Operate并注册到 Phantoscope 中。如何在 Phantoscope 中注册一个新的 Operator、创建 Pipeline、并创建 Application (也就是该脚本实现的步骤)可以参考文档 [通过 Phantoscope 创建 Application.](Create_Application.md)
+> 在 Phantoscope 中，提供了多个使用开源模型实现的 Operator。你可以将我们提供的其他 Operator 注册到 Phantoscope中。也可以用自己的模型创建一个 Operate并注册到 Phantoscope 中。如何在 Phantoscope 中注册一个新的 Operator、创建 Pipeline、并创建 Application (也就是该脚本实现的步骤)可以参考文档 [通过 Phantoscope 创建 Application.](Create_Application.md)
 
 
 
 2. 下载并解压数据集
 
 ```shell
-$ curl http://cs231n.stanford.edu/coco-animals.zip
+$ curl http://cs231n.stanford.edu/coco-animals.zip -o ./coco-animals.zip
 $ unzip coco-animals.zip
 ```
 
@@ -117,7 +117,7 @@ $ python3 scripts/load_data.py -s $LOCAL_ADDRESS:5000 -a example_app -p example_
 > | -s   | 该参数指定了上述容器 phantoscope_api_1 服务所在的 IP 和端口。 |
 > | -a   | 该参数指定要将数据导入的 Application 的名称。                |
 > | -p   | 该参数指定了使用到的 Pipeline 的名称。                       |
-> | -d   | 该参数指定了要导入图片的名称。                               |
+> | -d   | 该参数指定了要导入图片的路径。                               |
 >
 
 除了通过该脚本导入图片数据，也可以通过 curl 导入。
@@ -141,7 +141,7 @@ $ curl --location --request POST $LOCAL_ADDRESS':5000/v1/application/example_app
 本步骤将启动 Phantoscope 的前端进行图片搜索。关于前端界面 Preview 的更多详细说明请参考 [Preview 说明](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/preview.md)。
 
 ```shell
-$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/preview:latest
+$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 phantoscope/preview:latest
 ```
 
 > | 参数 | 说明                                                         |

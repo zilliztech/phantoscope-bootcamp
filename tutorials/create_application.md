@@ -61,7 +61,7 @@ Phantoscope_vgg_1      python3 server.py                Up      0.0.0.0:50001->5
 
 Operator 是 Phantoscope 中的工作单元，负责将输入的图片向量化，Phantoscope 提供了多个使用不同模型实现的 Operator,  这些 Operator 详情可参考文档 [Phantoscope 内置 Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/operator.md)。
 
-> 您也可以使用自己的模型来实现一个Operator，如何将自己的模型在 Phantoscope 中创建一个 Operator 可参考文档 [创建 Operator, 实现自定义模型](create_operotar)。
+> 您也可以使用自己的模型来实现一个Operator，如何将自己的模型在 Phantoscope 中创建一个 Operator 可参考文档 [创建 Operator, 实现自定义模型](create_operator.md)。
 
 在 Phantoscope 中，Operator 可分为 Processor 和 Encoder 两类。Processor 通常负责对图片数据做进一步的处理。比如 Processor 接收了一张图片，然后将图片中的人脸数据提取出来，再将人脸的数据发送出去。通常来说 Processor 接收的数据与发送的数据都是同一种类型的。Encoder 是 Operator 的最后一环，Encoder 会将非结构化的数据转变成向量或者是标签。
 
@@ -190,7 +190,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/application/object-ex
 1. 下载数据
 
 ```shell
-$ curl http://cs231n.stanford.edu/coco-animals.zip
+$ curl http://cs231n.stanford.edu/coco-animals.zip -o ./coco-animals.zip
 $ unzip coco-animals.zip
 ```
 
@@ -198,7 +198,7 @@ $ unzip coco-animals.zip
 
 ```shell
 $ pip3 install requests tqdm
-$ python3 scripts/load_data.py -d /tmp/coco-animals/train -a object-example -p object_pipeline
+$ python3 scripts/load_data.py -d ./coco-animals/train -a object-example -p object_pipeline
 ```
 
 等待运行结束，上传结果如下所示。
@@ -222,7 +222,7 @@ Please read file 'path_to_error_log' to check upload_error log.
 启动 Phantoscope 的前端进行图片搜索。关于前端界面 Preview 的更多详细说明请参考 [Preview 说明](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/preview.md)。
 
 ```shell
-$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/preview:latest
+$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 phantoscope/preview:latest
 ```
 
 > 如果之前已经启动了 Preview，则不用重新启动了。可以直接在网页中访问已经启动好的 Preview。在前端页面左上角选择名为 object-example 的 Application 即可访问刚刚构建完成的这个 Application。
