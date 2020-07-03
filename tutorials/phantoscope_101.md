@@ -88,7 +88,7 @@ $ ./scripts/prepare.sh
 >
 > Application 对应的是实际业务场景。创建完成 Application 后即可实现图片的导入和查询等操作了。关于更多 Application 的详解请参考 [什么是Application.](https://github.com/zilliztech/Phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/application.md)
 >
-> 在 Phantoscope 中，提供了多种将图片向量化的开源的深度学习模型实现的 Operator，你可以将我们提供的其他 Operator 注册到 Phantoscope中。也可以用自己的模型创建一个 Operate并注册到 Phantoscope 中。如何在 Phantoscope 中注册一个新的 Operator、创建 Pipeline、并创建 Application (也就是该脚本实现的步骤)可以参考文档 [通过 Phantoscope 创建 Application.](Create_Application.md)
+> 在 Phantoscope 中，提供了多个使用开源模型实现的 Operator。你可以将我们提供的其他 Operator 注册到 Phantoscope中。也可以用自己的模型创建一个 Operate并注册到 Phantoscope 中。如何在 Phantoscope 中注册一个新的 Operator、创建 Pipeline、并创建 Application (也就是该脚本实现的步骤)可以参考文档 [通过 Phantoscope 创建 Application.](Create_Application.md)
 
 
 
