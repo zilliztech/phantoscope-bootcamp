@@ -222,7 +222,7 @@ Please read file 'path_to_error_log' to check upload_error log.
 启动 Phantoscope 的前端进行图片搜索。关于前端界面 Preview 的更多详细说明请参考 [Preview 说明](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/preview.md)。
 
 ```shell
-$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/preview:latest
+$ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 phantoscope/preview:latest
 ```
 
 > 如果之前已经启动了 Preview，则不用重新启动了。可以直接在网页中访问已经启动好的 Preview。在前端页面左上角选择名为 object-example 的 Application 即可访问刚刚构建完成的这个 Application。
