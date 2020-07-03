@@ -98,7 +98,7 @@ $ mv custom_operator.py custom_operator.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/custom_operator.py
 ```
 
-- 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt, requirements-gpu.txt** 中添加：
+- 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt** 中添加：
 
 ```bash
 Keras==2.3.1
@@ -108,6 +108,8 @@ pillow
 ```
 
   > 如果你使用自己的模型，请修改 custom_operator.py 中的接口函数和 requirements.txt 中的相关依赖。
+  >
+  > 如果你的模型需要使用 GPU 提取特征，那么请在 **requirements-gpu.txt** 中添加相关依赖。
 
 #### 2.2.3 调整 gRPC 服务
 
@@ -123,7 +125,7 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 
 ### 2.3 构建 Docker 镜像
 
-综上，通过修改 **data**、**server** 和 **custom_operator** 文件自定义了一个 Operactor 结构，接下来将运行 `make cpu` 命令构建自定义 Operator 的 Docker 镜像：
+综上，通过修改 **data**、**server** 和 **custom_operator** 文件自定义了一个 Operactor 结构，接下来将运行 `make cpu` 命令构建自定义 Operator 的 Docker 镜像，如果模型中用到 GPU ，请使用 `make gpu` 命令：
 
 ```bash
 $ mv Makefile Makefile.bak
