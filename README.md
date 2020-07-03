@@ -13,8 +13,8 @@ Phantoscope is a cloud-native image search engine based on Milvus and deep learn
 
 This bootcamp includes the following content:
 
-- [Getting start with Phantoscope](./tutorials)
-- [Application scenarios](./scenarios)
+- [Getting start with Phantoscope](./EN_tutorials)
+- [Application scenarios](./EN_scenarios)
 
 To connect with other users and contributors, welcome to join our  [Slack channel](https://join.slack.com/t/zillizworkplace/shared_invite/zt-enpvlmud-6gnqhPqQryhQLfj3BQhbew).
 
