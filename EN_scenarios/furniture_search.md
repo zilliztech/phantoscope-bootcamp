@@ -1,4 +1,4 @@
-# Using Phantoscope to Search for Similar Furniture
+# Using Phantoscope to Search Similar Furniture
 
 This article shows how to use Phantoscope to build a image-based search system to find similar furniture.
 
