@@ -190,7 +190,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/application/object-ex
 1. 下载数据
 
 ```shell
-$ curl http://cs231n.stanford.edu/coco-animals.zip
+$ curl http://cs231n.stanford.edu/coco-animals.zip -o ./coco-animals.zip
 $ unzip coco-animals.zip
 ```
 
@@ -198,7 +198,7 @@ $ unzip coco-animals.zip
 
 ```shell
 $ pip3 install requests tqdm
-$ python3 scripts/load_data.py -d /tmp/coco-animals/train -a object-example -p object_pipeline
+$ python3 scripts/load_data.py -d ./coco-animals/train -a object-example -p object_pipeline
 ```
 
 等待运行结束，上传结果如下所示。

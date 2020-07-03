@@ -95,7 +95,7 @@ $ ./scripts/prepare.sh
 2. 下载并解压数据集
 
 ```shell
-$ curl http://cs231n.stanford.edu/coco-animals.zip
+$ curl http://cs231n.stanford.edu/coco-animals.zip -o ./coco-animals.zip
 $ unzip coco-animals.zip
 ```
 
@@ -117,7 +117,7 @@ $ python3 scripts/load_data.py -s $LOCAL_ADDRESS:5000 -a example_app -p example_
 > | -s   | 该参数指定了上述容器 phantoscope_api_1 服务所在的 IP 和端口。 |
 > | -a   | 该参数指定要将数据导入的 Application 的名称。                |
 > | -p   | 该参数指定了使用到的 Pipeline 的名称。                       |
-> | -d   | 该参数指定了要导入图片的名称。                               |
+> | -d   | 该参数指定了要导入图片的路径。                               |
 >
 
 除了通过该脚本导入图片数据，也可以通过 curl 导入。
