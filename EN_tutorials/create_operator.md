@@ -90,7 +90,7 @@ fi
 | dimension(self) | Return the dimension of a custom Operator's model output vector, such as 2048. |
 | metric_type(self) | Return the model metric of a custom Operator, such as L2 (Euclidean distance). |
 
-- This article customizes the `CustomOperator` based on the ResNet50 model, refer to this [resnet50_custom_operator.py](./script/custom_operator.py) code:
+- This article customizes the `CustomOperator` based on the ResNet50 model, refer to this [resnet50_custom_operator.py](../tutorials/script/custom_operator.py) code:
 
 ```bash
 # download custom_operator.py to resnet50-encoder floder
@@ -98,7 +98,7 @@ $ mv custom_operator.py custom_operator.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/custom_operator.py
 ```
 
-- 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt, requirements-gpu.txt** 中添加：
+- Add dependencies according to the **custom_operator.py **code in the **requirements.txt**
 
 ```bash
 Keras==2.3.1
@@ -107,11 +107,13 @@ grpcio==1.27.2
 pillow
 ```
 
-  > 如果你使用自己的模型，请修改 custom_operator.py 中的接口函数和 requirements.txt 中的相关依赖。
+  > If you are using your own model, please modify the interface functions in **custom_operator.py** and the dependencies in **requirements.txt**.
+  >
+  > If your model requires a GPU to extract features, please add the dependencies to **requirements-gpu.txt**.
 
 #### 2.2.3 Adjust the gRPC service
 
-**server.py** 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
+The **server.py** file implements the call logic for a custom Operator. Defined Operator types tune the gRPC service, and this article implements the ResNet-based encoder method, then the code module on the processor is removed:
 
 ```bash
 # download server.py to resnet50-encoder floder
@@ -119,11 +121,11 @@ $ mv server.py server.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/server.py
 ```
 
-> 如果你的模型实现的功能是 processor 类型，那么应该删除 encoder 的相关代码。 
+> If your model implements a processor type of functionality, you should remove the code associated with the encoder.
 
-### 2.3 构建 Docker 镜像
+### 2.3 Build Docker mirror image
 
-综上，通过修改 **data**、**server** 和 **custom_operator** 文件自定义了一个 Operactor 结构，接下来将运行 `make cpu` 命令构建自定义 Operator 的 Docker 镜像：
+In summary, you have customized an Operactor structure by modifying the **data**, **server** and **custom_operator** files, and will run the `make cpu` command to build a custom Operator Docker mirror image:
 
 ```bash
 $ mv Makefile Makefile.bak
@@ -131,28 +133,28 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 $ make cpu
 ```
 
-我们可以在 **Makefile** 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
+We can change the `IMAGE_NAME` custom image name in the [Makefile](../tutorials/script/Makefile). For example, `resnet50_encoder`, then by running `docker images` command will see a mirror image named `psoperator/resnet50_encoder:latest`.
 
-### 2.4 启动容器并验证
+### 2.4 Start the container and verify
 
-- 启动容器
+- Start the container
 
 ```bash
 $ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
 $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/resnet50_encoder:latest
 ```
 
-  该命令的参数介绍：
+  The parameters of the command are described as follows:
 
-| 参数                                  | 描述                                                         |
+| Parameter                             | Description                                                  |
 | ------------------------------------- | ------------------------------------------------------------ |
-| -p 52001:52001                        | -p 表示端口映射，将本机的 52001 端口映射到 Docker 中的52001端口 |
-| -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 | -e 定义 Docker 的环境变量，容器的 OP_ENDPOINT 环境变量的端口需要与 -p 映射到本机的端口一致 |
-| psoperator/resnet50_encoder:latest    | Docker 镜像名称，请修改为上一步自定义的镜像名                |
+| -p 52001:52001                        | -p stands for port mapping, mapping the local 52001 port to the 52001 port in Docker |
+| -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 | -e Defines Docker's environment variable, the port of the container's OP_ENDPOINT environment variable needs to be the same as the port that -p maps to locally. |
+| psoperator/resnet50_encoder:latest    | Docker's mirror image names, please change the image name to the one you customized in the previous step. |
 
-  容器启动后可以运行 `docker logs <resnet50_encoder container id>` 查看状态。
+After the container is started, you can run `docker logs <resnet50_encoder container id>` to see the status.
 
-- 验证容器
+- Verify
 
 ```bash
 # Download and run the test_operator.py
@@ -168,15 +170,15 @@ INFO:root:  vector dim: 2048
 INFO:root:All tests over.
 ```
 
-> 运行测试脚本 -e 的参数与启动容器时的 `OP_ENDPOINT` 内容对应。
+> The parameters to run the test script -e correspond to the contents of `OP_ENDPOINT` when the container is started.
 >
-> 应该在启动容器后过约 3 分钟再运行验证代码，因为初始化 Operator 需要一些时间。
+> You should run the validation code approximately 3 minutes after starting the container because it takes some time to initialize the Operator.
 
 
 
-## 3. 注册 Operator
+## 3. Register Operator
 
-- 查看容器的运行状态，包括 [Phantoscope 快速开始](https://github.com/zilliztech/phantoscope/tree/0.1.0/docs/site/zh-CN/quickstart) 时启动的 5 个容器，以及上一步启动的自定义Operator 的容器。
+- View the operational status of the containers, including the five containers that were started at [Phantoscope Quick Start](https://github.com/zilliztech/phantoscope/tree/0.1.0/docs/site/en/quickstart), as well as the containers of the custom Operator that were started in the previous step.
 
 ```bash
 $ docker ps
@@ -189,7 +191,7 @@ a8a8291d5217        milvusdb/milvus:0.7.0-cpu-d031120-de409b    "/var/lib/milvus
 2c8f0dc350a7        minio/minio:latest                          "/usr/bin/docker-ent…"   10 minutes ago       Up 10 minutes           0.0.0.0:9000->9000/tcp                               phantoscope_minio_1
 ```
 
-将 `resnet50-encoder` Operator 注册到 Phantoscope 中：
+Register the `resnet50-encoder` Operator to the In Phantoscope:
 
 ```bash
 $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
@@ -200,11 +202,11 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 }'
 ```
 
-  > 端口 52001 是启动自定义 Operactor 容器时映射的端口。
+  > Operator 名称。Port 52001 is the port that is mapped when starting the custom Operator container.
   >
-  >  `name` 参数 resnet50_encoder 是在 custom_operator.py 中定义的 Operator 名称。
+  > `name` parameter resnet50_encoder is the port mapped on the custom_ Operator name as defined in operator.py.
 
-  正确的运行结果会返回对应 Operator 的信息：
+The result of a correct run will return the following information for the corresponding Operator:
 
 ```bash
 {"_name": "resnet50_encoder", "_backend": "resnet50_encoder", "_type": "encoder", "_input": "image", "_output": "vector", "_endpoint": "127.0.0.1:52001", "_metric_type": "L2", "_dimension": 2048}
@@ -212,24 +214,25 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 
 
-## 4. 创建 Application
+## 4. Create Application
 
-综上，我们已经将自定义的 Operator 注册到 Phantoscope 中了，接下来可以创建一个  Application 实现以图搜图，参考 [创建 Application](./create_application.md)。
+Now that we have registered our custom Operator into Phantoscope, we can create an Application that implements the graph search, see [Create an Application](./create_application.md).
 
-> 在创建 Phantoscope Application 时我们已经在上一步完成了注册 Operator，这一步可跳过，而在接下来创建 Pipeline 时请**注意**修改 `encoder` 参数为 `resnet50_encoder`。
+> When creating the Phantoscope Application we have already registered the Operator in the previous step, so this step can be skipped. When creating the Pipeline next, please **NOTICE** change the `encoder` parameter to `resnet50_encoder`.
 
 
 
-## 5. VGG 模型比对
+## 5. VGG model comparison
 
-本文实现了基于 ResNet 模型以图搜图，与 Vgg16 模型创建的 Application 搜索同一张图片的效果比对如下：
+This article implements a ResNet-based model to search for a picture based on a picture, and compares the effect with the Application search for the same picture created by the Vgg16 model as follows:
 
-- Vgg 模型检索效果
+- VGG model retrieval effect
 
-![](../pic/vgg16.png)
+![](../tutorials/pic/vgg16.png)
 
-- 自定义 Operator 检索效果（ResNet）
+- Custom Operator retrieval effect (ResNet)
 
-![](./pic/resnet50.png)
+![](../tutorials/pic/resnet50.png)
 
-我们知道 Vgg 模型的准确率低于 ResNet，本文检索的效果也是后者更优。
+We know that the Vgg model is less accurate than ResNet, and the results retrieved in this paper are also better for the latter.
+
