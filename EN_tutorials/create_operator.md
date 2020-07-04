@@ -202,7 +202,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 }'
 ```
 
-  > Operator 名称。Port 52001 is the port that is mapped when starting the custom Operator container.
+  > Port 52001 is the port that is mapped when starting the custom Operator container.
   >
   > `name` parameter resnet50_encoder is the port mapped on the custom_ Operator name as defined in operator.py.
 
