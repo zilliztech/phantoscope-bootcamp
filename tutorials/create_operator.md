@@ -98,7 +98,7 @@ $ mv custom_operator.py custom_operator.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/custom_operator.py
 ```
 
-- 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt, requirements-gpu.txt** 中添加：
+- 根据 **custom_operator.py** 代码添加相关依赖，在 **requirements.txt** 中添加：
 
 ```bash
 Keras==2.3.1
@@ -108,13 +108,15 @@ pillow
 ```
 
   > 如果你使用自己的模型，请修改 custom_operator.py 中的接口函数和 requirements.txt 中的相关依赖。
+  >
+  > 如果你的模型需要使用 GPU 提取特征，那么请在 **requirements-gpu.txt** 中添加相关依赖。
 
 #### 2.2.3 调整 gRPC 服务
 
-**server.py** 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
+[server.py](./script/server.py) 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
 
 ```bash
-# download server.py to resnet50-encoder floder
+# download server.py to resnet50-encoder folder
 $ mv server.py server.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/server.py
 ```
@@ -123,7 +125,7 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 
 ### 2.3 构建 Docker 镜像
 
-综上，通过修改 **data**、**server** 和 **custom_operator** 文件自定义了一个 Operactor 结构，接下来将运行 `make cpu` 命令构建自定义 Operator 的 Docker 镜像：
+综上，通过修改 **data**、**server** 和 **custom_operator** 文件自定义了一个 Operactor 结构，接下来将运行 `make cpu` 命令构建自定义 Operator 的 Docker 镜像，如果模型中用到 GPU ，请使用 `make gpu` 命令：
 
 ```bash
 $ mv Makefile Makefile.bak
@@ -131,7 +133,7 @@ $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/
 $ make cpu
 ```
 
-我们可以在 **Makefile** 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
+我们可以在 [Makefile](./script/Makefile) 中修改 `IMAGE_NAME` 自定义镜像名称，例如 `resnet50_encoder`，那么通过运行 `docker images` 命令可以看到有一个名为 `psoperator/resnet50_encoder:latest` 的镜像。
 
 ### 2.4 启动容器并验证
 
@@ -155,7 +157,7 @@ $ docker run -p 52001:52001 -e OP_ENDPOINT=${LOCAL_ADDRESS}:52001 -d psoperator/
 - 验证容器
 
 ```bash
-# Download and run the test_operator.py
+# Download and run the test_operator.py in the current directory
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/test_custom_operator.py
 $ python3 test_custom_operator.py -e ${LOCAL_ADDRESS}:52001
 # You are expected to see the following output
@@ -168,7 +170,7 @@ INFO:root:  vector dim: 2048
 INFO:root:All tests over.
 ```
 
-> 运行测试脚本 -e 的参数与启动容器时的 `OP_ENDPOINT` 内容对应。
+> 运行 [test_custom_operator.py](./script/test_custom_operator.py) 测试脚本 -e 的参数与启动容器时的 `OP_ENDPOINT` 内容对应。
 >
 > 应该在启动容器后过约 3 分钟再运行验证代码，因为初始化 Operator 需要一些时间。
 

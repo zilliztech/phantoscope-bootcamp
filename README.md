@@ -1,18 +1,20 @@
-# 关于 Phantoscope 在线训练营
-Phantoscope 是一个基于 Milvus 与深度学习的云原生图像搜索引擎，旨在通过以下方式帮助用户应对以图搜图的挑战：
+# About Phantoscope Bootcamp
+[English](./README.md) | [中文版](./README_CN.md)
 
-- 十亿级别的图像的高性能搜索
+Phantoscope is a cloud-native image search engine based on Milvus and deep learning, designed to help users meet the challenges of image-based search:
 
-- 完全兼容 Tensorflow Pytorch TensorRT ONNX XGBoost 等主流深度学习框架
+- High-performance search for billions of images.
 
-- 提供 GUI 展示搜索效果、管理 Phantoscope 资源
+- Fully compatible with Tensorflow, Pytorch, TensorRT, ONNX, XGBoost and other mainstream deep learning frameworks.
 
-- 原生支持 Docker 与 Kubernetes
+- Provide GUI to display search results and manage Phantoscope resources.
 
-本在线训练营包括以下内容：
+- Native support for Docker and Kubernetes.
 
-- [Phantoscope 入门教程](./tutorials)
-- [应用场景](./scenarios)
+This bootcamp includes the following content:
 
-欢迎加入： [Slack channel](https://join.slack.com/t/zillizworkplace/shared_invite/zt-enpvlmud-6gnqhPqQryhQLfj3BQhbew) 与其他用户和贡献者联系。
+- [Get start with Phantoscope](./EN_tutorials)
+- [Application scenarios](./EN_scenarios)
+
+To connect with other users and contributors, welcome to join our  [Slack channel](https://join.slack.com/t/zillizworkplace/shared_invite/zt-enpvlmud-6gnqhPqQryhQLfj3BQhbew).
 
