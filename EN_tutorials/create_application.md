@@ -1,45 +1,45 @@
-# 使用内置 Operator 创建 Application
+# Create Applications with the built-in Operator
 
-## 概述
+## Summary
 
-本文将详细介绍如何在Phantoscope中通过内置的 Operator 来创建 Application.
+This article describes in detail how to create applications in Phantoscope with the built-in Operator.
 
-## 环境准备
+## Preparation
 
 - Docker >= 19.03
 - Docker Compose >= 1.25.0
 - Python >= 3.5
 
-## 安装 Phantoscope
+## Install Phantoscope
 
-> 如果已经安装了Phantoscope，则可以跳过该过程。
+> If Phantoscope is already installed, the process can be skipped.
 
-1. 拉取源码
+1. Pull source code
 
 ```shell
 $ git clone https://github.com/zilliztech/Phantoscope.git
 $ cd Phantoscope
 ```
 
-2. 设置环境变量
+2. Set environment variables
 
 ```shell
 $ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
 ```
 
-3. 启动 Phantoscope 容器
+3. Run Phantoscope
 
 ```shell
 $ docker-compose up -d
 ```
 
-4. 检查所有容器状态：
+4. Check the status of all containers
 
 ```shell
 $ docker-compose ps
 ```
 
-*预期得到如下输出：*
+*Expected outputs:*
 
 ```
 Name                   Command                          State   Ports
@@ -53,35 +53,35 @@ Phantoscope_vgg_1      python3 server.py                Up      0.0.0.0:50001->5
 
 
 
-## 构建一个应用
+## Create an Application
 
-完成 Phantoscope 安装后，即可通过启动并注册 Operator、创建 Piplline、创建 Application 来构建一个完整的以图搜图应用。
+After completing the Phantoscope installation, you can build a complete image search application by starting and registering the Operator, creating the Piplline, and creating the Application.
 
-### 启动 Operator
+### Run Operator
 
-Operator 是 Phantoscope 中的工作单元，负责将输入的图片向量化，Phantoscope 提供了多个使用不同模型实现的 Operator,  这些 Operator 详情可参考文档 [Phantoscope 内置 Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/operator.md)。
+Operator is the unit of work in Phantoscope and is responsible for vectorizing the input picture. Phantoscope provides a number of Operators which are implemented using different models, these Operators are detailed in [Phantoscope built-in Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/operator.md).
 
-> 您也可以使用自己的模型来实现一个Operator，如何将自己的模型在 Phantoscope 中创建一个 Operator 可参考文档 [创建 Operator, 实现自定义模型](create_operator.md)。
+> You can also use your own model to implement an Operator. How to create an Operator from your model in Phantoscope can be found in [Create Operator to implement custom model](create_operator.md).
 
-在 Phantoscope 中，Operator 可分为 Processor 和 Encoder 两类。Processor 通常负责对图片数据做进一步的处理。比如 Processor 接收了一张图片，然后将图片中的人脸数据提取出来，再将人脸的数据发送出去。通常来说 Processor 接收的数据与发送的数据都是同一种类型的。Encoder 是 Operator 的最后一环，Encoder 会将非结构化的数据转变成向量或者是标签。
+In Phantoscope, there are two types of Operators: Processor and Encoder.  Processor is usually responsible for further processing of the image data. For example, Processor receives an image, extracts the face data from the image, and sends the data to the out. Usually the data that the Processor receives and the data that it sends are of the same type. Encoder is the last step in the Operator's chain, and Encoder converts unstructured data into vectors or tags.
 
-本文将以 Phantoscope 中内置的 SSD-object-detector 和 Xception 这两个 Operator 为例，讲解如何在 Phantoscope 中启动并注册 Operator. 本项目中使用了两个 Operator 来构建一个应用，你也可以仅使用一个 Operator （仅使用一个 Operator时，该 Operator 为 Encoder 类型）来负责将图片向量化。
+This article will take the two operators SSD-object-detector and Xception built in Phantoscope as an example to explain how to start and register the operator in Phantoscope. Two Operators are used in this project to build an application, or you can use just one Operator (which is of type Encoder when using just one Operator) to be responsible for vectorizing the image.
 
-SSD-object-detector 能够检测图片中的物体，并返回检测到的图片中的一组物体，属于 Processor这一类。
+The SSD-object-detector are able to detect objects in the picture and return a set of objects in the detected picture, which belongs to the category of Processor.
 
-Xception 对输入的图片进行 embedding，得到表征图片的特征向量，其属于 Encoder 这一类。
+Xception embedding the input picture to get the feature vectors representing the picture, which belongs to the category of Encoder.
 
 ```shell
 $ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
-# 启动 SSD-object-detector
+# Run SSD-object-detector
 $ docker run -d -p 50010:50010 -e OP_ENDPOINT=${LOCAL_ADDRESS}:50010 psoperator/ssd-detector:latest
-# 启动 Xception
+# Run Xception
 $ docker run -d -p 50011:50011 -e OP_ENDPOINT=${LOCAL_ADDRESS}:50011 psoperator/xception-encoder:latest
 ```
 
-> 该步骤启动了上述提到的两个 Operator，并映射了其提供服务的端口 50010 和 50011.
+> This step starts the two Operators mentioned above and maps the ports 50010 and 50011 on which they provide services.
 >
-> docker ps 查看上述容器是否启动成功
+> docker ps: check if the above container started successfully.
 >
 > ```
 > $ docker ps                                                                                            
@@ -92,13 +92,13 @@ $ docker run -d -p 50011:50011 -e OP_ENDPOINT=${LOCAL_ADDRESS}:50011 psoperator/
 
 
 
-### 注册Operator
+### Register Operator
 
-当 Phantosscope 启动时是没有 Operator 的，在当前的版本中如果你想在 Phantoscope 中使用 Operator 需要先将启动好的 Operator 手动注册到 Phantoscope 中。
+There is no Operator when Phantosscope is started, in the current version if you want to use Operator in Phantoscope you need to register the started Operator manually in Phantoscope first.
 
-本步骤将上述启动的两个 Operator 分别注册到 Phantoscope 中。
+This step registers the two Operators started above separately into the Phantoscope.
 
-通过向 `/v1/operator/regist`这个 API 发送注册请求：
+By sending a registration request to the API `/v1/operator/regist`:
 
 ```shell
 # register ssd-detector to phantoscope with exposed 50010 port and a self-defined name 'ssd_detector'
@@ -118,19 +118,19 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 }'
 ```
 
-> `endpoint`: 绑定 Operator 的服务端口。上述启动的 ssd-detector 这个 Operator 提供的服务端口 50010，故在注册 ssd-detector 这个 Operator 时，此处应填写 50010. xception-encoder 这个 Operator 提供的服务端口 50011，故在注册 xception-encoder 这个 Operator 时，此处应填写 50011.
+> `endpoint`: Binds the Operator's service port. The Operator ssd-detector started above provides service port 50010, so when registering the Operator for ssd-detector, fill in here with 50010. Operator xception-encoder provides the service port 50011, so when registering the Operator for xception-encoder, fill in here with 50011. 
 >
-> 此处的 endpoint 会被 Phantoscope 用来与 Operator 进行通讯,故不能填写为 127.0.0.1,应该填写为 192 或 10 开头的内网地址，确保在 phantoscope 可以访问。
+> The endpoint here is used by the Phantoscope to communicate with the Operator, so you can't fill in 127.0.0.1, you should fill in the intranet address starting with 192 or 10. Make sure the phantoscope is accessible.
 >
-> `name`: 自定义 Operator 名称。本处将  ssd-detector 这个 Operator 以 ssd-detector 这个名字注册到 Phantoscope 中，将  xception-encoder 这个 Operator 以 xception 这个名字注册到 Phantoscope 中。注意该名称不可和其他已经存在的其他 Operator 的名称重复。
+> `name`: Customize Operator name. In this case, Operator ssd-detector is registered as ssd-detector. Operator xception-encoder is registered to the Phantoscope under the name xception. Note that this name cannot be duplicated with the names of other Operators already in existence.
 
 
 
-### 创建Pipeline
+### Create Pipeline
 
-pipeline 从 application 中接收数据然后将数据交给第一个 operator,等待第一个 operator 的返回, 获取到返回值之后将返回值作为输入交给下一个 operator,直到运行完最后一个 operator。关于 Pipeline 的详细描述请参考 [什么是 Pipeline.](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/pipeline.md)
+Pipeline receives data from the application and gives it to the first operator, waits for the return of the first operator, and then takes the return value as input to the next operator until the last operator has been run. For more information, please refer to [What is a pipeline?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/pipeline.md)
 
-此处将创建一条包含 ssd_detector 和 xception 这两个 Operator 的 Pipeline。
+Here, a Pipeline is created that contains the two Operators ssd_detector and xception.
 
 ```shell
 # create a pipeline with necessary information
@@ -145,18 +145,17 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/pipeline/object_pipel
 }'
 ```
 
-> `${LOCAL_ADDRESS}':5000/v1/pipeline/object_pipeline'`: object_pipeline 定义了新创建的 Pipeline 的名称。注意该名称不可和其他已经存在的其他 Pipeline 的名称重复。
+> `${LOCAL_ADDRESS}:5000/v1/pipeline/object_ pipeline`: object_pipeline defines the newly created Pipeline. Note that this name must not duplicate the names of other Pipelines that already exist.
 >
-> `processors`: 此处指定创建的这条 Pipeline 包含的 Operator 中的 processors 的名称。如若没有启动 processors 这个 Pipeline，这里可写为`""`。
+> `processors`: This specifies that the Pipeline created here contains the Operator processors. If the Pipeline does not start processors, this can be written as `""`.
 >
-> `encoder`: 此处指定创建的这条 Pipeline 包含的 Operator 中的 encoder 的名称。
->
+> `encoder`: This specifies that the Pipeline created here contains the Operator encoder.
 
 
 
-### 创建 Application
+### Create Application
 
-本步骤将以上述创建的 object_pipeline 来构建一个 Phantoscope Application。关于 Application 的详细描述请参考 [什么是Application](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/application.md)。
+This step will build a Phantoscope Application with the object_pipeline created above. For more information, please refer to [What is an application?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/application.md)
 
 ```shell
 # create an application with a self-define field name assocatied with pipeline created in step3 
@@ -173,35 +172,35 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/application/object-ex
 }'
 ```
 
-> `${LOCAL_ADDRESS}':5000/v1/application/object-example'`:  命令中的 object-example 是自定义 Application 的名称。注意该名称不可和其他已经存在的其他 Application 的名称重复。
+> `${LOCAL_ADDRESS}':5000/v1/application/ object-example' `: The object-example in the command is a custom name of the application. Note that this name cannot be duplicated by other existing application names.
 >
-> `object_field`: 自定义的字段名称，保存着 object_pipeline 处理后的结果
+> `object_field`: A custom field name that holds the result of object_pipeline processing
 >
-> `Pipeline` 这里指定了新创建的 Application 要绑定的 Pipeline 的名称。
+> `Pipeline`: Here specifies the name of the Pipeline that the newly created Application will bind to.
 >
-> `s3Buckets`: 将图片存储在名为 object-s3 的 S3 bucket 中。
+> `s3Buckets`: Stores the images in an S3 bucket named object-s3.
 
 
 
-## 使用
+## Use
 
-### 数据导入
+### Import data
 
-1. 下载数据
+1. Download data
 
 ```shell
 $ curl http://cs231n.stanford.edu/coco-animals.zip
 $ unzip coco-animals.zip
 ```
 
-2. 导入数据
+2. Import data
 
 ```shell
 $ pip3 install requests tqdm
 $ python3 scripts/load_data.py -d /tmp/coco-animals/train -a object-example -p object_pipeline
 ```
 
-等待运行结束，上传结果如下所示。
+Wait for the run to finish and upload the results as shown below.
 
 ```
 upload url is http://127.0.0.1:5000/v1/application/object-example/upload
@@ -213,91 +212,91 @@ All images has been uploaded: success 754, fail 46
 Please read file 'path_to_error_log' to check upload_error log.
 ```
 
-> 如果在导入的图片中没有检测到符合的物体，该张图片的导入会触发导入失败的报错。但不影响其他图片的导入。
+> If no matching object is detected in the imported image, the import of that image triggers an import failure report. However, it does not affect the import of other images.
 
 
 
-### 查询
+### Inquiry
 
-启动 Phantoscope 的前端进行图片搜索。关于前端界面 Preview 的更多详细说明请参考 [Preview 说明](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/zh-CN/tutorials/preview.md)。
+Launch Phantoscope's front-end for image search. For more information, please refer to [Preview](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/preview.md).
 
 ```shell
 $ docker run -d -e API_URL=http://$LOCAL_ADDRESS:5000 -p 8000:80 Phantoscope/preview:latest
 ```
 
-> 如果之前已经启动了 Preview，则不用重新启动了。可以直接在网页中访问已经启动好的 Preview。在前端页面左上角选择名为 object-example 的 Application 即可访问刚刚构建完成的这个 Application。
+> If you've already launched the Preview, you don't need to restart it. You can access the already launched Preview directly on the web page by selecting the option named object-example Application will access the just-built version of this Application.
 
 
 
-## 部分 API 说明
+## API description
 
-上述讲了如何在 Phantoscope 中，注册 Operator、创建 Pipeline 和 Application。那接下来将如何查看和删除 Phantoscope 中的 Operator、Pipeline 和 Application。 更多关于 API 的详细描述请参考 [Phantoscope API](https://app.swaggerhub.com/apis-docs/phantoscope/Phantoscope/0.1.0#/)。
+The above describes how to register an Operator, create a Pipeline and an Application in Phantoscope. Then see how to remove Operator, Pipeline and Application from Phantoscope. For more information, please refer to [Phantoscope API](https://app.swaggerhub.com/apis-docs/phantoscope/Phantoscope/0.1.0#/)。
 
-### 查看 Operator、Pipeline、Application
+### See Operator, Pipeline, Application
 
-**查看 Phantoscope 中注册的的所有 Operator**
+**View all Operators registered in Phantoscope**.
 
 ```shell
 $ curl -X GET "http://127.0.0.1:5000/v1/operator/" -H "accept: application/json"
 ```
 
-**查看 Phantoscope 中创建的的所有 Pipeline**
+**View all Pipelines created in Phantoscope**.
 
 ```shell
 $ curl -X GET "http://127.0.0.1:5000/v1/pipeline/" -H "accept: application/json"
 ```
 
-**查看 Phantoscope 中创建的的所有 Application**
+**View all Applications created in Phantoscope**.
 
 ```shell
 $ curl -X GET "http://127.0.0.1:5000/v1/application/" -H "accept: application/json"
 ```
 
-### 删除 Operator、Pipeline、Application
+### Delete Operator, Pipeline, Application
 
-**删除一个在 Phantoscope 中注册的 Operator。**
+**Delete an Operator registered in Phantoscope.**
 
 ```shell
 $ curl -X DELETE "http://127.0.0.1:5000/v1/operator/vgg19" -H "accept: application/json"
 ```
 
-> 上述语句删除了一个名为 vgg19 的 Operator.
+> The above statement removes an Operator named vgg19.
 
-**删除一个 Phantoscope 中的 Pipeline。**
+**Delete a Pipeline in Phantoscope.**
 
 ```shell
 $ curl -X DELETE "http://127.0.0.1:5000/v1/pipeline/vgg19_pipeline" -H "accept: application/json"
 ```
 
-> 上述语句删除了一个名为 vgg19_pipeline 的Pipeline。
+> The above statement deletes a Pipeline named vgg19_pipeline.
 
-**删除一个 Phantoscope 中的 Application。**
+**Delete an Application in Phantoscope.**
 
-在删除一个 Application 之前，需要先删除该 Application 中的 entity（也就是这个 Application 中导入的图片数据。）
+Before deleting an Application, you need to first delete the entity (that is, the image data imported in this Application).
 
-1. 查看该 Application 下的 entity
+1. View the entity under this Application.
 
 ```shell
-# 查看该 Application 下的 entity
+# View the entity under this Application.
 $ curl -X GET "http://127.0.0.1:5000/v1/application/example_app/entity?num=100" -H "accept: application/json"
 ```
 
-> 该接口可以查看一个 Application 中已有的 entity 的 id。一个 entity 对应一张图片。
+> This interface looks at the id of an existing entity in an Application. An entity corresponds to a picture.
 
-2. 删除 entity
+2. Delete entity
 
 ```shell
-# 删除 entity
+# Delete entity
 $ curl -X DELETE "http://127.0.0.1:5000/v1/application/example_app/entity/1592888165100064000" -H "accept: application/json"
 ```
 
-> 删除entity，需要传入两个参数。一个是 Application 的名称，也就是上面命令中的 `example_app`, 一个是要删除的 entity 对应的 id，也就是上面个命令中的 `1592888165100064000`。如果要删除一个 Application 中的某张图片，可以通过该接口实现。
+> Deleting an entity requires two arguments to be passed. One is the name of the Application, which is the `example_app` in the above command. The other one is the id of the entity to be deleted, i.e. the ` 1592888165100064000`. If you want to delete a picture from an Application, you can do it through this interface.
 
-3. 删除 Application
+3. Delete Application
 
 ```shell
-# 删除 Application
+# Delete Application
 $ curl -X DELETE "http://127.0.0.1:5000/v1/application/example_app" -H "accept: application/json"
 ```
 
-> 该命令删除了一个名为 `example_app` 的 Application。在目前版本中，需要先删除 Application 中的所有 entity 才能删除该 Application 。
+> This command removes an Application named `example_app`. If you want to delete an application, you need to delete all the entities in the application before you can remove the Application .

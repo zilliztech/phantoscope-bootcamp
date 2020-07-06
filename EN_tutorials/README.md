@@ -5,6 +5,6 @@
 The getting started section includes the following content:
 
 - [Phantoscope Quick Start](./phantoscope_101.md)
-- [Creating Applications with the built-in Operator](./create_application.md)
-- [Creating Operator to implement custom model](./create_operator.md)
+- [Create Applications with the built-in Operator](./create_application.md)
+- [Create Operator to implement custom model](./create_operator.md)
 
