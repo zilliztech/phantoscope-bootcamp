@@ -116,7 +116,7 @@ pillow
 [server.py](./script/server.py) 文件实现对自定义 Operator 的调用逻辑，我们需要根据自己定义的 Operator 类型调整 gRPC 服务，本文实现的是基于 ResNet 的 encoder 方法，那么将删除关于 processor 的代码模块：
 
 ```bash
-# download server.py to resnet50-encoder floder
+# download server.py to resnet50-encoder folder
 $ mv server.py server.py.bak
 $ wget https://raw.githubusercontent.com/zilliztech/phantoscope-bootcamp/master/tutorials/script/server.py
 ```

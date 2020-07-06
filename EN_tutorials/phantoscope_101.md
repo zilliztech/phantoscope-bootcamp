@@ -2,13 +2,13 @@
 
 ## Summary
 
-Phantoscope is a cloud-native image search engine based on Milvus and deep learning.It uses deep learning models, flexible combinations of different image processing techniques, and the powerful empowerment of the Milvus vector search engine to provide a unified interface for high-performance image search engine.
+Phantoscope is a cloud-native image search engine based on Milvus and deep learning. It uses deep learning models, flexible combinations of different image processing techniques, and the powerful empowerment of the Milvus vector search engine to provide a unified interface for high-performance image search engine.
 
 Fully compatible with mainstream deep learning frameworks such as Tensorflow, Pytorch TensorRT, ONNX and XGBoost.
 
 Provide GUI to display search results and manage Phantoscope resources.
 
-[Deatails of Phantoscope Projects](https://github.com/zilliztech/Phantoscope/tree/0.1.0)
+[Details of Phantoscope Projects](https://github.com/zilliztech/Phantoscope/tree/0.1.0)
 
 This article will show you how to quickly install the Phantoscope image search engine and build an image search application with Phantscope.
 
@@ -20,20 +20,20 @@ This article will show you how to quickly install the Phantoscope image search e
 
 ## Install
 
-1. Pull source code
+1. Download Phantoscope:
 
 ```shell
 $ git clone https://github.com/zilliztech/Phantoscope.git
 $ cd Phantoscope
 ```
 
-2. Set environment variables
+2. Set up the environment:
 
 ```shell
 $ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
 ```
 
-3. Run Phantoscope
+3. Start up Phantoscope containers:
 
 ```shell
 $ docker-compose up -d
@@ -45,7 +45,7 @@ $ docker-compose up -d
 $ docker-compose ps
 ```
 
-*Expected outputs:*
+*You are expected to see the following output:*
 
 ```
 Name                   Command                          State   Ports
@@ -84,9 +84,9 @@ $ ./scripts/prepare.sh
 >
 > This Operator refers to the container Phantoscope_vgg_1 started above. The Operator in Phantoscope provides the service to vectorize the image. After an Operator has been started, the Operator needs to be registered. The script prepare.sh registers the above-started Phantoscope_vgg_1 to Phantoscope. For more information, please refer to [What is an Operator?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/operator.md).
 >
-> Pipeline is used in Phatoscope to group Operator, and is an abstraction of the data processing flow. This step creates a Pipeline with the Operator registered above.For more information, please refer to [What is a pipeline?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/pipeline.md)
+> The Pipeline is used in Phatoscope to group Operator, and is an abstraction of the data processing flow. This step creates a Pipeline with the Operator registered above.For more information, please refer to [What is a pipeline?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/pipeline.md)
 >
-> Application corresponds to the actual business scenario. After the Application is created, you can import and query the pictures. For more information, please refer to [What is an application?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/application.md)
+> The Application corresponds to the actual business scenario. After the Application is created, you can import and query the pictures. For more information, please refer to [What is an application?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/application.md)
 >
 > In Phantoscope, several Operator implementations using open source models are available. You can also create an Operate with your own model and register it in Phantoscope. How to register a new Operator, create a Pipeline, and create an Application in Phantoscope (the steps this script implements) can refer to [create_application.md.](create_application.md)
 

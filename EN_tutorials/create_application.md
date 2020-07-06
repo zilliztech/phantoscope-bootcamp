@@ -1,6 +1,4 @@
-# Create Applications with the built-in Operator
-
-## Summary
+# Create Applications with the in-built Operator
 
 This article describes in detail how to create applications in Phantoscope with the built-in Operator.
 
@@ -12,22 +10,20 @@ This article describes in detail how to create applications in Phantoscope with 
 
 ## Install Phantoscope
 
-> If Phantoscope is already installed, the process can be skipped.
-
-1. Pull source code
+1. Download Phantoscope:
 
 ```shell
 $ git clone https://github.com/zilliztech/Phantoscope.git
 $ cd Phantoscope
 ```
 
-2. Set environment variables
+2. Set up the environment:
 
 ```shell
 $ export LOCAL_ADDRESS=$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'| head -n 1)
 ```
 
-3. Run Phantoscope
+3. Start up Phantoscope containers:
 
 ```shell
 $ docker-compose up -d
@@ -39,7 +35,7 @@ $ docker-compose up -d
 $ docker-compose ps
 ```
 
-*Expected outputs:*
+You are expected to see the following output:
 
 ```
 Name                   Command                          State   Ports
@@ -55,19 +51,19 @@ Phantoscope_vgg_1      python3 server.py                Up      0.0.0.0:50001->5
 
 ## Create an Application
 
-After completing the Phantoscope installation, you can build a complete image search application by starting and registering the Operator, creating the Piplline, and creating the Application.
+After completing the Phantoscope installation, you can build a complete image search application by starting and registering the Operator, creating the Pipeline, and creating the Application.
 
 ### Run Operator
 
-Operator is the unit of work in Phantoscope and is responsible for vectorizing the input picture. Phantoscope provides a number of Operators which are implemented using different models, these Operators are detailed in [Phantoscope built-in Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/operator.md).
+The operator is the unit of work in Phantoscope and is responsible for vectorizing the input picture. Phantoscope provides a number of Operators which are implemented using different models, these Operators are detailed in [Phantoscope in-build Operator](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/operator.md).
 
 > You can also use your own model to implement an Operator. How to create an Operator from your model in Phantoscope can be found in [Create Operator to implement custom model](create_operator.md).
 
-In Phantoscope, there are two types of Operators: Processor and Encoder.  Processor is usually responsible for further processing of the image data. For example, Processor receives an image, extracts the face data from the image, and sends the data to the out. Usually the data that the Processor receives and the data that it sends are of the same type. Encoder is the last step in the Operator's chain, and Encoder converts unstructured data into vectors or tags.
+In Phantoscope, there are two types of Operators: Processor and Encoder. The Processor is usually responsible for further processing of the image data. For example, the Processor receives an image, extracts the face data from the image, and sends the data to the out. Usually, the data that the Processor receives and the data that it sends are of the same type. The Encoder is the last step in the Operator's chain, and the Encoder converts unstructured data into vectors or tags.
 
-This article will take the two operators SSD-object-detector and Xception built in Phantoscope as an example to explain how to start and register the operator in Phantoscope. Two Operators are used in this project to build an application, or you can use just one Operator (which is of type Encoder when using just one Operator) to be responsible for vectorizing the image.
+This article will take the two operators SSD-object-detector and Xception in-build Phantoscope as an example to explain how to start and register the operator in Phantoscope. Two Operators are used in this project to build an application, or you can use just one Operator (which is of type Encoder when using just one Operator) to be responsible for vectorizing the image.
 
-The SSD-object-detector are able to detect objects in the picture and return a set of objects in the detected picture, which belongs to the category of Processor.
+The SSD-object-detector is able to detect objects in the picture and return a set of objects in the detected picture, which belongs to the category of Processor.
 
 Xception embedding the input picture to get the feature vectors representing the picture, which belongs to the category of Encoder.
 
@@ -81,7 +77,7 @@ $ docker run -d -p 50011:50011 -e OP_ENDPOINT=${LOCAL_ADDRESS}:50011 psoperator/
 
 > This step starts the two Operators mentioned above and maps the ports 50010 and 50011 on which they provide services.
 >
-> docker ps: check if the above container started successfully.
+> `docker ps`: check if the above container started successfully.
 >
 > ```
 > $ docker ps                                                                                            
@@ -120,9 +116,9 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 > `endpoint`: Binds the Operator's service port. The Operator ssd-detector started above provides service port 50010, so when registering the Operator for ssd-detector, fill in here with 50010. Operator xception-encoder provides the service port 50011, so when registering the Operator for xception-encoder, fill in here with 50011. 
 >
-> The endpoint here is used by the Phantoscope to communicate with the Operator, so you can't fill in 127.0.0.1, you should fill in the intranet address starting with 192 or 10. Make sure the phantoscope is accessible.
+> The endpoint here is used by the Phantoscope to communicate with the Operator, so you can't fill in 127.0.0.1, you should fill in the intranet address starting with 192 or 10. Make sure the Phantoscope is accessible.
 >
-> `name`: Customize Operator name. In this case, Operator ssd-detector is registered as ssd-detector. Operator xception-encoder is registered to the Phantoscope under the name xception. Note that this name cannot be duplicated with the names of other Operators already in existence.
+> `name`: Customize the Operator name. In this case, the Operator ssd-detector is registered as ssd-detector. Operator xception-encoder is registered to the Phantoscope under the name xception. Note that this name cannot be duplicated with the names of other Operators already in existence.
 
 
 
@@ -130,7 +126,7 @@ $ curl --location --request POST ${LOCAL_ADDRESS}':5000/v1/operator/regist' \
 
 Pipeline receives data from the application and gives it to the first operator, waits for the return of the first operator, and then takes the return value as input to the next operator until the last operator has been run. For more information, please refer to [What is a pipeline?](https://github.com/zilliztech/phantoscope/blob/0.1.0/docs/site/en/tutorials/pipeline.md)
 
-Here, a Pipeline is created that contains the two Operators ssd_detector and xception.
+The Pipeline is created that contains the two Operators ssd_detector and xception.
 
 ```shell
 # create a pipeline with necessary information
