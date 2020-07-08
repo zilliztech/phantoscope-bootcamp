@@ -58,6 +58,7 @@ file=models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 url=https://github.com/fchollet/deep-learning-models/releases/download/v0.2/resnet50_weights_tf_dim_ordering_tf_kernels.h5
 
 if [[ ! -f "${file}" ]]; then
+   mkdir models
    echo "[INFO] Model tar package does not exist, begin to download..."
    wget ${url} -O ${file}
    echo "[INFO] Model tar package download successfully!"
