@@ -58,8 +58,8 @@ $ cd resnet50-encoder
 - 编辑修改 **data/prepare_model.sh** 脚本，通过 `wget` 命令下载模型：
 
 ```bash
-file=resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
-url=https://github.com/fchollet/deep-learning-models/releases/download/v0.1/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+file=models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
+url=https://github.com/fchollet/deep-learning-models/releases/download/v0.2/resnet50_weights_tf_dim_ordering_tf_kernels.h5
 
 if [[ ! -f "${file}" ]]; then
    echo "[INFO] Model tar package does not exist, begin to download..."
